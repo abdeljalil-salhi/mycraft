@@ -13,9 +13,9 @@ class ChunkMesh(BaseMesh):
         self.context = self.game.context
         self.shader = self.game.shader.chunk
         
-        self.vbo_format = '3u1 1u1 1u1'
+        self.vbo_format = '3u1 1u1 1u1 1u1'
         self.format_size = sum(int(f[:1]) for f in self.vbo_format.split())
-        self.attrs = ('in_position', 'voxel_id', 'face_id')
+        self.attrs = ('in_position', 'voxel_id', 'face_id', 'ao_id')
         self.vao = self.get_vao()
     
     def get_vertex_data(self):
