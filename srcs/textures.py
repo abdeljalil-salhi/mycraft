@@ -9,7 +9,7 @@ class Textures:
     def __init__(self, game: 'Engine') -> None:
         self.game = game
         self.context = game.context
-        self.texture_0 = self.load('test')
+        self.texture_0 = self.load('frame')
         self.texture_0.use(location=0)
     
     def load(self, file_name: str) -> None:
@@ -24,3 +24,4 @@ class Textures:
         texture.build_mipmaps()
         texture.filter = (NEAREST, NEAREST)
         return texture
+    

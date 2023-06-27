@@ -15,8 +15,7 @@ void main(void)
 {
     vec3 texture_color = texture(unit_texture_0, uv).rgb;
     texture_color = pow(texture_color, gamma);
-    texture_color.rgb *= voxel_color;
-    texture_color = texture_color * 0.001 + vec3(1.0);
+    texture_color *= voxel_color;
     texture_color *= shading;
     texture_color = pow(texture_color, invGamma);
     fragColor = vec4(texture_color, 1.0);
