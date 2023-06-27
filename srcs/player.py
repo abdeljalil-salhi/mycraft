@@ -29,13 +29,13 @@ class Player(Camera):
         velocity = self.game.delta_time * PLAYER_SPEED
         if key_state[K_w if QWERTY else K_z]:
             self.move_forward(velocity)
-        elif key_state[K_s]:
+        if key_state[K_s]:
             self.move_backward(velocity)
-        elif key_state[K_d]:
+        if key_state[K_d]:
             self.move_right(velocity)
-        elif key_state[K_a if QWERTY else K_q]:
+        if key_state[K_a if QWERTY else K_q]:
             self.move_left(velocity)
-        elif key_state[K_e]:
+        if key_state[K_e]:
             self.move_up(velocity)
-        elif key_state[K_q if QWERTY else K_a]:
+        if key_state[K_q if QWERTY else K_a]:
             self.move_down(velocity)
