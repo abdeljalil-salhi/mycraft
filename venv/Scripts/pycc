@@ -1,0 +1,3 @@
+#!c:\users\pc\desktop\mycraft\venv\scripts\python.exe
+from numba.pycc import main
+main()
