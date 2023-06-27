@@ -1,0 +1,4 @@
+venv/Include
+venv/Lib
+venv/Scripts/*.exe
+__pycache__/
