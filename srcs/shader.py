@@ -17,6 +17,7 @@ class Shader:
     def set_uniforms_on_init(self) -> None:
         self.chunk['matrix_projection'].write(self.player.matrix_projection)
         self.chunk['matrix_model'].write(mat4())
+        self.chunk['unit_texture_0'] = 0
     
     def update(self) -> None:
         self.chunk['matrix_view'].write(self.player.matrix_view)

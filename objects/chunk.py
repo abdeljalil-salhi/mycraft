@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 from numpy import ndarray, zeros
+from glm import simplex, vec3
 
 from settings import CHUNK_VOLUME, CHUNK_SIZE, CHUNK_AREA
 from meshes.chunk_mesh import ChunkMesh
@@ -24,5 +25,7 @@ class Chunk:
         for x in range(CHUNK_SIZE):
             for z in range(CHUNK_SIZE):
                 for y in range(CHUNK_SIZE):
-                    voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = x + y + z
+                    voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = (
+                        x + y + z if int(simplex(vec3(x, y, z) * 0.1) + 1) else 0
+                    )
         return voxels

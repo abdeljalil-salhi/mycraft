@@ -6,6 +6,7 @@ from settings import WINDOW_RESOLUTION, BACKGROUND_COLOR
 from srcs.shader import Shader
 from srcs.scene import Scene
 from srcs.player import Player
+from srcs.textures import Textures
 
 class Engine:
     def __init__(self) -> None:
@@ -31,6 +32,7 @@ class Engine:
         self.on_init()
         
     def on_init(self) -> None:
+        self.textures = Textures(self)
         self.player = Player(self)
         self.shader = Shader(self)
         self.scene = Scene(self)
