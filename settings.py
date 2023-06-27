@@ -1,6 +1,22 @@
 from numba import njit
-from glm import vec2, vec3
+from glm import vec2, vec3, radians
+from math import atan, tan
 
 WINDOW_RESOLUTION = vec2(1600, 900)
 
+ASPECT_RATIO = WINDOW_RESOLUTION.x / WINDOW_RESOLUTION.y
+FOV_DEGREES = 50.0
+VERTICAL_FOV = radians(FOV_DEGREES)
+HORIZONTAL_FOV = 2.0 * atan(tan(VERTICAL_FOV * 0.5) * ASPECT_RATIO)
+NEAR = 0.1
+FAR = 2000.0
+PITCH_LIMIT = radians(89.0)
+
+PLAYER_SPEED = 0.005
+PLAYER_ROTATION_SPEED = 0.003
+PLAYER_POSITION = vec3(0.0, 0.0, 1.0)
+MOUSE_SENSITIVITY = 0.002
+
 BACKGROUND_COLOR = vec3(0.1, 0.16, 0.25)
+
+QWERTY = False

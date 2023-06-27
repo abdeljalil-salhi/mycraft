@@ -1,10 +1,11 @@
-from pygame import init, display, time, event, quit, GL_CONTEXT_MAJOR_VERSION, GL_CONTEXT_MINOR_VERSION, GL_CONTEXT_PROFILE_MASK, GL_CONTEXT_PROFILE_CORE, GL_DEPTH_SIZE, OPENGL, DOUBLEBUF, QUIT, KEYDOWN, K_ESCAPE
+from pygame import init, display, time, event, mouse, quit, GL_CONTEXT_MAJOR_VERSION, GL_CONTEXT_MINOR_VERSION, GL_CONTEXT_PROFILE_MASK, GL_CONTEXT_PROFILE_CORE, GL_DEPTH_SIZE, OPENGL, DOUBLEBUF, QUIT, KEYDOWN, K_ESCAPE
 from moderngl import create_context, DEPTH_TEST, CULL_FACE, BLEND
 from sys import exit
 
 from settings import WINDOW_RESOLUTION, BACKGROUND_COLOR
-from shader import Shader
-from scene import Scene
+from srcs.shader import Shader
+from srcs.scene import Scene
+from srcs.player import Player
 
 class Engine:
     def __init__(self) -> None:
@@ -14,6 +15,9 @@ class Engine:
         display.gl_set_attribute(GL_CONTEXT_PROFILE_MASK, GL_CONTEXT_PROFILE_CORE)
         display.gl_set_attribute(GL_DEPTH_SIZE, 24)
         display.set_mode(WINDOW_RESOLUTION, flags=OPENGL | DOUBLEBUF)
+        event.set_grab(True)
+        mouse.set_visible(False)
+        mouse.set_pos(WINDOW_RESOLUTION.x * 0.5, WINDOW_RESOLUTION.y * 0.5)
 
         self.context = create_context()
         self.context.enable(flags=DEPTH_TEST | CULL_FACE | BLEND)
@@ -27,10 +31,12 @@ class Engine:
         self.on_init()
         
     def on_init(self) -> None:
+        self.player = Player(self)
         self.shader = Shader(self)
         self.scene = Scene(self)
 
     def update(self) -> None:
+        self.player.update()
         self.shader.update()
         self.scene.update()
         
