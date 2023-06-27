@@ -1,3 +1,3 @@
 ## Progress
 
-![image](https://github.com/abdeljalil-salhi/mycraft/assets/65598953/cd71bfaf-5d65-40d2-9b1d-2ea48b7206b2)
+![image](https://github.com/abdeljalil-salhi/mycraft/assets/65598953/0adef39d-03f9-47e6-8170-12a5dd26a470)

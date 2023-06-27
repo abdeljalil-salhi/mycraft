@@ -1,4 +1,3 @@
-from typing import Tuple
 from numpy import array
 from moderngl import VertexArray
 
@@ -7,7 +6,7 @@ class BaseMesh:
         self.context = None
         self.shader = None
         self.vbo_format = None
-        self.attrs: Tuple[str, ...] = ()
+        self.attrs: tuple[str, ...] = None
         self.vao = None
     
     def get_vertex_data(self) -> array: ...
