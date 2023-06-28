@@ -5,7 +5,7 @@ layout (location = 0) out vec4 fragColor;
 const vec3 gamma = vec3(2.2);
 const vec3 invGamma = 1 / gamma;
 
-uniform sampler2D unit_texture_0;
+uniform sampler2D unit_texture;
 
 in vec3 voxel_color;
 in vec2 uv;
@@ -13,7 +13,7 @@ in float shading;
 
 void main(void)
 {
-    vec3 texture_color = texture(unit_texture_0, uv).rgb;
+    vec3 texture_color = texture(unit_texture, uv).rgb;
     texture_color = pow(texture_color, gamma);
     texture_color *= voxel_color;
     texture_color *= shading;

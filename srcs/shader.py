@@ -11,16 +11,21 @@ class Shader:
         self.context = game.context
         self.player = game.player
         self.chunk = self.get_program(shader_name='chunk')
+        self.voxel_marker = self.get_program(shader_name='voxel_marker')
         
         self.set_uniforms_on_init()
     
     def set_uniforms_on_init(self) -> None:
         self.chunk['matrix_projection'].write(self.player.matrix_projection)
         self.chunk['matrix_model'].write(mat4())
-        self.chunk['unit_texture_0'] = 0
+        self.chunk['unit_texture'] = 0
+        self.voxel_marker['matrix_projection'].write(self.player.matrix_projection)
+        self.voxel_marker['matrix_model'].write(mat4())
+        self.voxel_marker['unit_texture'] = 0
     
     def update(self) -> None:
         self.chunk['matrix_view'].write(self.player.matrix_view)
+        self.voxel_marker['matrix_view'].write(self.player.matrix_view)
 
     def get_program(self, shader_name: str) -> Program:
         with open(f'shaders/{shader_name}.vert', 'r') as f:
