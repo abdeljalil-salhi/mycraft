@@ -12,6 +12,9 @@ class Player(Camera):
         self.game = game
         super().__init__(position, yaw, pitch)
     
+    def init_world(self, world) -> None:
+        self.world = world
+    
     def update(self) -> None:
         self.keyboard_events()
         self.mouse_events()

@@ -42,7 +42,9 @@ class Engine:
         self.player = Player(self)
         self.shader = Shader(self)
         self.scene = Scene(self)
-
+        
+        self.player.init_world(self.scene.world)
+    
     def update(self) -> None:
         self.player.update()
         self.shader.update()

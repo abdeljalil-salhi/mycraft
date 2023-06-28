@@ -1,7 +1,10 @@
-from glm import vec3, radians, perspective, mat4, cos, sin, normalize, cross, lookAt, clamp
+from typing import TYPE_CHECKING
+from glm import vec3, ivec3, radians, perspective, mat4, cos, sin, normalize, cross, lookAt, clamp
 
 from settings import VERTICAL_FOV, ASPECT_RATIO, NEAR, FAR, PITCH_LIMIT
 from srcs.frustum import Frustum
+if TYPE_CHECKING:
+    from srcs.world import World
 
 class Camera:
     def __init__(self, position: float, yaw: float, pitch: float) -> None:
@@ -17,6 +20,7 @@ class Camera:
         self.matrix_view = mat4()
         
         self.frustrum = Frustum(self)
+        self.world: 'World' = None
     
     def update(self) -> None:
         self.update_vectors()
@@ -41,21 +45,31 @@ class Camera:
     def rotate_yaw(self, delta_x: float) -> None:
         self.yaw += delta_x
     
+    def check_movement_ability(self, position: ivec3) -> bool:
+        # TODO: Check if the player is in a chunk
+        return True
+    
     def move_forward(self, velocity: float) -> None:
-        self.position += self.forward * velocity
+        if self.check_movement_ability(self.position + self.forward * velocity):
+            self.position += self.forward * velocity
     
     def move_backward(self, velocity: float) -> None:
-        self.position -= self.forward * velocity
+        if self.check_movement_ability(self.position - self.forward * velocity):
+            self.position -= self.forward * velocity
     
     def move_right(self, velocity: float) -> None:
-        self.position += self.right * velocity
+        if self.check_movement_ability(self.position + self.right * velocity):
+            self.position += self.right * velocity
     
     def move_left(self, velocity: float) -> None:
-        self.position -= self.right * velocity
+        if self.check_movement_ability(self.position - self.right * velocity):
+            self.position -= self.right * velocity
     
     def move_up(self, velocity: float) -> None:
-        self.position += self.up * velocity
+        if self.check_movement_ability(self.position + self.up * velocity):
+            self.position += self.up * velocity
     
     def move_down(self, velocity: float) -> None:
-        self.position -= self.up * velocity
+        if self.check_movement_ability(self.position - self.up * velocity):
+            self.position -= self.up * velocity
     
