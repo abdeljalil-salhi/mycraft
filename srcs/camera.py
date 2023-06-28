@@ -1,6 +1,7 @@
 from glm import vec3, radians, perspective, mat4, cos, sin, normalize, cross, lookAt, clamp
 
 from settings import VERTICAL_FOV, ASPECT_RATIO, NEAR, FAR, PITCH_LIMIT
+from srcs.frustum import Frustum
 
 class Camera:
     def __init__(self, position: float, yaw: float, pitch: float) -> None:
@@ -14,6 +15,8 @@ class Camera:
         
         self.matrix_projection = perspective(VERTICAL_FOV, ASPECT_RATIO, NEAR, FAR)
         self.matrix_view = mat4()
+        
+        self.frustrum = Frustum(self)
     
     def update(self) -> None:
         self.update_vectors()

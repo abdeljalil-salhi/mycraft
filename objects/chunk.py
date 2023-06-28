@@ -16,6 +16,9 @@ class Chunk:
         self.voxels: ndarray = None
         self.mesh: ChunkMesh = None
         self.is_empty = True
+        
+        self.center = (vec3(self.position) + 0.5) * CHUNK_SIZE
+        self.is_on_frustum = self.game.player.frustrum.is_on_frustum
     
     def get_model_matrix(self) -> mat4x4:
         return translate(mat4(), vec3(self.position) * CHUNK_SIZE)
@@ -27,7 +30,7 @@ class Chunk:
         self.mesh = ChunkMesh(self)
     
     def render(self) -> None:
-        if not self.is_empty:
+        if not self.is_empty and self.is_on_frustum(self):
             self.set_uniform()
             self.mesh.render()
     
