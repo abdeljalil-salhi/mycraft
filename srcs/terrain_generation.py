@@ -45,7 +45,10 @@ def set_voxel_id(voxels: ndarray, x: int, y: int, z: int, wx: int, wy: int, wz: 
             and noise2(wx * 0.1, wz * 0.1) * 3 + 3 < wy < world_height - 10):
             voxel_id = 0
         else:
-            voxel_id = STONE
+            if random() < DIAMOND_PROBABILITY:
+                voxel_id = DIAMOND_ORE
+            else:
+                voxel_id = STONE
     else:
         rng = int(7 * random())
         ry = wy - rng
@@ -67,10 +70,8 @@ def set_voxel_id(voxels: ndarray, x: int, y: int, z: int, wx: int, wy: int, wz: 
         generate_tree(voxels, x, y, z, voxel_id)
 
 @njit
-def generate_tree(voxels: ndarray, x: int, y: int, z: int, voxel_id: int):
-    rnd = random()
-    
-    if voxel_id != GRASS or rnd > TREE_PROBABILITY:
+def generate_tree(voxels: ndarray, x: int, y: int, z: int, voxel_id: int):    
+    if voxel_id != GRASS or random() > TREE_PROBABILITY:
         return None
     if y + TREE_HEIGHT >= CHUNK_SIZE:
         return None
@@ -84,13 +85,17 @@ def generate_tree(voxels: ndarray, x: int, y: int, z: int, voxel_id: int):
     
     # Generate leaves
     m = 0
+    rnd2 = random()
     for n, iy in enumerate(range(TREE_H_HEIGHT, TREE_HEIGHT - 1)):
         k = iy % 2
         rng = int(random() * 2)
         for ix in range(-TREE_H_WIDTH + m, TREE_H_WIDTH - m * rng):
             for iz in range(-TREE_H_WIDTH + m * rng, TREE_H_WIDTH - m):
                 if (ix + iz) % 4:
-                    voxels[get_index(x + ix + k, y + iy, z + iz + k)] = LEAVES
+                    if rnd2 < SAKURA_PROBABILITY:
+                        voxels[get_index(x + ix + k, y + iy, z + iz + k)] = SAKURA_LEAVES
+                    else:
+                        voxels[get_index(x + ix + k, y + iy, z + iz + k)] = TRANSPARENT_LEAVES
         m += 1 if n > 0 else 3 if n > 1 else 0
     
     # Generate tree trunk
@@ -98,4 +103,7 @@ def generate_tree(voxels: ndarray, x: int, y: int, z: int, voxel_id: int):
         voxels[get_index(x, y + iy, z)] = WOOD
     
     # Generate tree top
-    voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = LEAVES
+    if rnd2 < SAKURA_PROBABILITY:
+        voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = SAKURA_LEAVES
+    else:
+        voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = TRANSPARENT_LEAVES

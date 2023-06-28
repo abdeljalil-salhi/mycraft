@@ -4,6 +4,7 @@ from glm import ivec3, sign, fract
 from settings import MAX_RAY_DISTANCE, CHUNK_SIZE, WORLD_WIDTH, WORLD_HEIGHT, WORLD_DEPTH, CHUNK_AREA, WORLD_AREA
 from meshes.chunk_mesh_builder import get_chunk_index
 from objects.chunk import Chunk
+from srcs.texturing import IMENOX, OAK_PLANK
 if TYPE_CHECKING:
     from srcs.world import World
 
@@ -22,7 +23,7 @@ class VoxelHandler:
         
         # 0: Remove voxel, 1: Add voxel
         self.interaction_mode = 0
-        self.new_voxel_id = 1
+        self.new_voxel_id = OAK_PLANK
     
     def rebuild_adjacent_chunk(self, adjacent_voxel_position) -> None:
         index = get_chunk_index(adjacent_voxel_position)
