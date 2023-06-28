@@ -37,8 +37,7 @@ def get_ao(local_position: vec3, world_position: vec3, world_voxels: ndarray, pl
         g = is_void((x    , y + 1, z    ), (wx    , wy + 1, wz    ), world_voxels)
         h = is_void((x - 1, y + 1, z    ), (wx - 1, wy + 1, wz    ), world_voxels)
 
-    ao = (a + b + c), (g + h + a), (e + f + g), (c + d + e)
-    return ao
+    return (a + b + c), (g + h + a), (e + f + g), (c + d + e)
 
 @njit
 def pack_data(x: int, y: int, z: int, voxel_id: int, face_id: int, ao_id: int, flip_id: int) -> tuple:
@@ -105,102 +104,101 @@ def build_chunk_mesh(chunk_voxels: ndarray, format_size: int, chunk_position: tu
                 if not voxel_id:
                     continue
                 
-                # Get the voxel position in the world
+                # Get the world position of the voxel
                 cx, cy, cz = chunk_position
-                wx = cx * CHUNK_SIZE + x
-                wy = cy * CHUNK_SIZE + y
-                wz = cz * CHUNK_SIZE + z
-                
+                wx = x + cx * CHUNK_SIZE
+                wy = y + cy * CHUNK_SIZE
+                wz = z + cz * CHUNK_SIZE
+
                 # Top face
                 if is_void((x, y + 1, z), (wx, wy + 1, wz), world_voxels):
-                    ao = get_ao((x, y + 1, z), (wx, wy + 1, wz), world_voxels, 'Y')
+                    ao = get_ao((x, y + 1, z), (wx, wy + 1, wz), world_voxels, plane='Y')
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
-                    
-                    # format: x, y, z, voxel_id, face_id
+
+                    # Format: x, y, z, voxel_id, face_id, ao_id, flip_id
                     v0 = pack_data(x    , y + 1, z    , voxel_id, 0, ao[0], flip_id)
                     v1 = pack_data(x + 1, y + 1, z    , voxel_id, 0, ao[1], flip_id)
                     v2 = pack_data(x + 1, y + 1, z + 1, voxel_id, 0, ao[2], flip_id)
                     v3 = pack_data(x    , y + 1, z + 1, voxel_id, 0, ao[3], flip_id)
-                    
+
                     if flip_id:
                         index = add_data(vertex_data, index, v1, v0, v3, v1, v3, v2)
                     else:
                         index = add_data(vertex_data, index, v0, v3, v2, v0, v2, v1)
-                
+
                 # Bottom face
                 if is_void((x, y - 1, z), (wx, wy - 1, wz), world_voxels):
-                    ao = get_ao((x, y - 1, z), (wx, wy - 1, wz), world_voxels, 'Y')
+                    ao = get_ao((x, y - 1, z), (wx, wy - 1, wz), world_voxels, plane='Y')
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
-                    
+
                     v0 = pack_data(x    , y    , z    , voxel_id, 1, ao[0], flip_id)
                     v1 = pack_data(x + 1, y    , z    , voxel_id, 1, ao[1], flip_id)
                     v2 = pack_data(x + 1, y    , z + 1, voxel_id, 1, ao[2], flip_id)
                     v3 = pack_data(x    , y    , z + 1, voxel_id, 1, ao[3], flip_id)
-                    
+
                     if flip_id:
                         index = add_data(vertex_data, index, v1, v3, v0, v1, v2, v3)
                     else:
                         index = add_data(vertex_data, index, v0, v2, v3, v0, v1, v2)
-                
+
                 # Right face
                 if is_void((x + 1, y, z), (wx + 1, wy, wz), world_voxels):
-                    ao = get_ao((x + 1, y, z), (wx + 1, wy, wz), world_voxels, 'X')
+                    ao = get_ao((x + 1, y, z), (wx + 1, wy, wz), world_voxels, plane='X')
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
-                    
+
                     v0 = pack_data(x + 1, y    , z    , voxel_id, 2, ao[0], flip_id)
                     v1 = pack_data(x + 1, y + 1, z    , voxel_id, 2, ao[1], flip_id)
                     v2 = pack_data(x + 1, y + 1, z + 1, voxel_id, 2, ao[2], flip_id)
                     v3 = pack_data(x + 1, y    , z + 1, voxel_id, 2, ao[3], flip_id)
-                    
+
                     if flip_id:
                         index = add_data(vertex_data, index, v3, v0, v1, v3, v1, v2)
                     else:
                         index = add_data(vertex_data, index, v0, v1, v2, v0, v2, v3)
-                
+
                 # Left face
                 if is_void((x - 1, y, z), (wx - 1, wy, wz), world_voxels):
-                    ao = get_ao((x - 1, y, z), (wx - 1, wy, wz), world_voxels, 'X')
+                    ao = get_ao((x - 1, y, z), (wx - 1, wy, wz), world_voxels, plane='X')
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
-                    
-                    v1 = pack_data(x    , y + 1, z    , voxel_id, 3, ao[0], flip_id)
-                    v0 = pack_data(x    , y    , z    , voxel_id, 3, ao[1], flip_id)
+
+                    v0 = pack_data(x    , y    , z    , voxel_id, 3, ao[0], flip_id)
+                    v1 = pack_data(x    , y + 1, z    , voxel_id, 3, ao[1], flip_id)
                     v2 = pack_data(x    , y + 1, z + 1, voxel_id, 3, ao[2], flip_id)
                     v3 = pack_data(x    , y    , z + 1, voxel_id, 3, ao[3], flip_id)
-                    
+
                     if flip_id:
                         index = add_data(vertex_data, index, v3, v1, v0, v3, v2, v1)
                     else:
                         index = add_data(vertex_data, index, v0, v2, v1, v0, v3, v2)
-                
+
                 # Back face
                 if is_void((x, y, z - 1), (wx, wy, wz - 1), world_voxels):
-                    ao = get_ao((x, y, z - 1), (wx, wy, wz - 1), world_voxels, 'Z')
+                    ao = get_ao((x, y, z - 1), (wx, wy, wz - 1), world_voxels, plane='Z')
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
-                    
-                    v0 = pack_data(x    , y    , z    , voxel_id, 4, ao[0], flip_id)
-                    v1 = pack_data(x    , y + 1, z    , voxel_id, 4, ao[1], flip_id)
+
+                    v0 = pack_data(x,     y,     z    , voxel_id, 4, ao[0], flip_id)
+                    v1 = pack_data(x,     y + 1, z    , voxel_id, 4, ao[1], flip_id)
                     v2 = pack_data(x + 1, y + 1, z    , voxel_id, 4, ao[2], flip_id)
-                    v3 = pack_data(x + 1, y    , z    , voxel_id, 4, ao[3], flip_id)
-                    
+                    v3 = pack_data(x + 1, y,     z    , voxel_id, 4, ao[3], flip_id)
+
                     if flip_id:
                         index = add_data(vertex_data, index, v3, v0, v1, v3, v1, v2)
                     else:
                         index = add_data(vertex_data, index, v0, v1, v2, v0, v2, v3)
-                
+
                 # Front face
                 if is_void((x, y, z + 1), (wx, wy, wz + 1), world_voxels):
-                    ao = get_ao((x, y, z + 1), (wx, wy, wz + 1), world_voxels, 'Z')
+                    ao = get_ao((x, y, z + 1), (wx, wy, wz + 1), world_voxels, plane='Z')
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
-                    
+
                     v0 = pack_data(x    , y    , z + 1, voxel_id, 5, ao[0], flip_id)
                     v1 = pack_data(x    , y + 1, z + 1, voxel_id, 5, ao[1], flip_id)
                     v2 = pack_data(x + 1, y + 1, z + 1, voxel_id, 5, ao[2], flip_id)
                     v3 = pack_data(x + 1, y    , z + 1, voxel_id, 5, ao[3], flip_id)
-                    
+
                     if flip_id:
                         index = add_data(vertex_data, index, v3, v1, v0, v3, v2, v1)
                     else:
                         index = add_data(vertex_data, index, v0, v2, v1, v0, v3, v2)
     
     return vertex_data[:index + 1]
-    
