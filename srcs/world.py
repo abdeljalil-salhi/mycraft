@@ -3,6 +3,7 @@ from numpy import empty
 
 from settings import WORLD_VOLUME, CHUNK_VOLUME, WORLD_WIDTH, WORLD_HEIGHT, WORLD_DEPTH, WORLD_AREA
 from objects.chunk import Chunk
+from srcs.voxel_handler import VoxelHandler
 if TYPE_CHECKING:
     from main import Engine
 
@@ -14,6 +15,7 @@ class World:
         
         self.build_chunks()
         self.build_chunk_mesh()
+        self.voxel_handler = VoxelHandler(self)
     
     def build_chunks(self) -> None:
         for x in range(WORLD_WIDTH):
@@ -33,7 +35,7 @@ class World:
             chunk.build_mesh()
     
     def update(self) -> None:
-        pass
+        self.voxel_handler.update()
     
     def render(self) -> None:
         for chunk in self.chunks:

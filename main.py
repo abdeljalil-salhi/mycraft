@@ -1,4 +1,4 @@
-from pygame import init, display, time, event, mouse, quit, GL_CONTEXT_MAJOR_VERSION, GL_CONTEXT_MINOR_VERSION, GL_CONTEXT_PROFILE_MASK, GL_CONTEXT_PROFILE_CORE, GL_DEPTH_SIZE, OPENGL, DOUBLEBUF, QUIT, KEYDOWN, K_ESCAPE
+from pygame import init, display, time, event, mouse, quit, image, transform, GL_CONTEXT_MAJOR_VERSION, GL_CONTEXT_MINOR_VERSION, GL_CONTEXT_PROFILE_MASK, GL_CONTEXT_PROFILE_CORE, GL_DEPTH_SIZE, OPENGL, DOUBLEBUF, QUIT, KEYDOWN, K_ESCAPE
 from moderngl import create_context, DEPTH_TEST, CULL_FACE, BLEND
 from sys import exit
 
@@ -30,8 +30,14 @@ class Engine:
         self.is_running = True
         
         self.on_init()
-        
+    
+    def show_loading_screen(self) -> None:
+        self.context.clear(color=BACKGROUND_COLOR)
+        display.flip()
+    
     def on_init(self) -> None:
+        self.show_loading_screen()
+        
         self.textures = Textures(self)
         self.player = Player(self)
         self.shader = Shader(self)
@@ -55,6 +61,7 @@ class Engine:
         for e in event.get():
             if e.type == QUIT or (e.type == KEYDOWN and e.key == K_ESCAPE):
                 self.is_running = False
+            self.player.handle_mouse_events(e)
     
     def run(self) -> None:
         while self.is_running:
