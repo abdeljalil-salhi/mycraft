@@ -13,9 +13,9 @@ uniform mat4 matrix_model;
 flat out int voxel_id;
 flat out int face_id;
 
-out vec3 voxel_color;
 out vec2 uv;
 out float shading;
+out vec3 fragment_world_position;
 
 const float ao_values[4] = float[4](
     0.1, 0.25, 0.5, 1.0
@@ -24,7 +24,7 @@ const float ao_values[4] = float[4](
 const float face_shading[6] = float[6](
     1.0, 0.5,   // top   bottom
     0.5, 0.8,   // right left
-    0.8, 0.8    // front back
+    0.5, 0.8    // front back
 );
 
 const vec2 uv_coords[4] = vec2[4](
@@ -76,8 +76,8 @@ void main(void)
     int uv_index = gl_VertexID % 6 + ((face_id & 1) + flip_id * 2) * 6;
 
     uv = uv_coords[uv_indices[uv_index]];
-    voxel_color = hash31(voxel_id);
     shading = face_shading[face_id] * ao_values[ao_id];
+    fragment_world_position = (matrix_model * vec4(in_position, 1.0)).xyz;
     
-    gl_Position = matrix_projection * matrix_view * matrix_model * vec4(in_position, 1.0);
+    gl_Position = matrix_projection * matrix_view * vec4(fragment_world_position, 1.0);
 }

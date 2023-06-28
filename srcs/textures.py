@@ -9,10 +9,12 @@ class Textures:
     def __init__(self, game: 'Engine') -> None:
         self.game = game
         self.context = game.context
-        self.texture = self.load('frame')
+        self.texture_frame = self.load('frame')
+        self.texture_water = self.load('water')
         self.texture_array = self.load('textures', is_texture_array=True)
-        self.texture.use(location=0)
+        self.texture_frame.use(location=0)
         self.texture_array.use(location=1)
+        self.texture_water.use(location=2)
     
     def load(self, file_name: str, is_texture_array:bool=False) -> None:
         texture = image.load(f'assets/{file_name}.png')

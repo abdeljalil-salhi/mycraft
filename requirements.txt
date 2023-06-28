@@ -2,3 +2,4 @@ pygame
 moderngl
 PyGLM
 numba
+opensimplex

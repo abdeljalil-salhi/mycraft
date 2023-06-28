@@ -1,8 +1,10 @@
 from typing import TYPE_CHECKING
+from numba import njit
 from numpy import ndarray, zeros, any
-from glm import simplex, vec2, vec3, translate, mat4, mat4x4, ivec3
+from glm import vec3, translate, mat4, mat4x4, ivec3
 
-from settings import CHUNK_VOLUME, CHUNK_SIZE, CHUNK_AREA
+from settings import CHUNK_VOLUME, CHUNK_SIZE
+from srcs.terrain_generation import get_height, set_voxel_id
 from meshes.chunk_mesh import ChunkMesh
 if TYPE_CHECKING:
     from srcs.world import World
@@ -36,18 +38,24 @@ class Chunk:
     
     def build_voxels(self) -> ndarray:
         voxels = zeros(CHUNK_VOLUME, dtype='uint8')
+        
         cx, cy, cz = ivec3(self.position) * CHUNK_SIZE
-        for x in range(CHUNK_SIZE):
-            wx = x + cx
-            for z in range(CHUNK_SIZE):
-                wz = z + cz
-                world_height = int(simplex(vec2(wx, wz) * 0.01) * 32 + 32)
-                local_height = min(world_height - cy, CHUNK_SIZE)
-                for y in range(local_height):
-                    wy = y + cy
-                    voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = 2
+        self.generate_terrain(voxels, cx, cy, cz)
         
         if any(voxels):
             self.is_empty = False
         
         return voxels
+    
+    @staticmethod
+    @njit
+    def generate_terrain(voxels: ndarray, cx: int, cy: int, cz: int) -> None:
+        for x in range(CHUNK_SIZE):
+            wx = x + cx
+            for z in range(CHUNK_SIZE):
+                wz = z + cz
+                world_height = get_height(wx, wz)
+                local_height = min(world_height - cy, CHUNK_SIZE)
+                for y in range(local_height):
+                    wy = y + cy
+                    set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height)
