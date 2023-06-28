@@ -7,6 +7,7 @@ from srcs.shader import Shader
 from srcs.scene import Scene
 from srcs.player import Player
 from srcs.textures import Textures
+from srcs.mixer import Mixer
 
 class Engine:
     def __init__(self) -> None:
@@ -42,6 +43,7 @@ class Engine:
         self.player = Player(self)
         self.shader = Shader(self)
         self.scene = Scene(self)
+        self.mixer = Mixer()
         
         self.player.init_world(self.scene.world)
     
@@ -70,6 +72,7 @@ class Engine:
             self.handle_events()
             self.update()
             self.render()
+            self.mixer.play_soundtrack()
         quit()
         exit()
     

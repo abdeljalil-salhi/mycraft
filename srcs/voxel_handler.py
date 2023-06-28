@@ -50,6 +50,7 @@ class VoxelHandler:
         if self.voxel_id:
             result = self.get_voxel_id(self.voxel_world_position + self.voxel_normal)
             if not result[0]:
+                self.game.mixer.put_sound.play()
                 _, voxel_index, _, chunk = result
                 chunk.voxels[voxel_index] = self.new_voxel_id
                 chunk.mesh.rebuild()
@@ -58,6 +59,7 @@ class VoxelHandler:
     
     def remove_voxel(self) -> None:
         if self.voxel_id:
+            self.game.mixer.harvest_sound.play()
             self.chunk.voxels[self.voxel_index] = 0
             self.chunk.mesh.rebuild()
             self.rebuild_adjacent_chunks()
