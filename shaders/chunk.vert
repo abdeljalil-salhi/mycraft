@@ -28,8 +28,8 @@ const float face_shading[6] = float[6](
 );
 
 const vec2 uv_coords[4] = vec2[4](
-    vec2(0.0, 0.0), vec2(0.0, 1.0),
-    vec2(1.0, 0.0), vec2(1.0, 1.0)
+    vec2(0, 0), vec2(0, 1),
+    vec2(1, 0), vec2(1, 1)
 );
 
 const int uv_indices[24] = int[24](
@@ -38,13 +38,6 @@ const int uv_indices[24] = int[24](
     3, 1, 0, 3, 0, 2, // even flipped faces
     1, 2, 3, 1, 0, 2  // odd flipped faces
 );
-
-vec3 hash31(float p)
-{
-    vec3 p3 = fract(vec3(p * 21.2) * vec3(.1031, .1030, .0973));
-    p3 += dot(p3, p3.yzx + 33.33);
-    return fract((p3.xxy + p3.yzz) * p3.zyx) + 0.05;
-}
 
 void unpack(uint packed_data)
 {
