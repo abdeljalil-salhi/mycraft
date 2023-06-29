@@ -92,8 +92,12 @@ def generate_tree(voxels: ndarray, x: int, y: int, z: int, voxel_id: int):
         for ix in range(-TREE_H_WIDTH + m, TREE_H_WIDTH - m * rng):
             for iz in range(-TREE_H_WIDTH + m * rng, TREE_H_WIDTH - m):
                 if (ix + iz) % 4:
-                    if rnd2 < SAKURA_PROBABILITY:
+                    if rnd2 < IMENOX_PROBABILITY:
+                        voxels[get_index(x + ix + k, y + iy, z + iz + k)] = GOLD_BLOCK
+                    elif rnd2 < SAKURA_PROBABILITY:
                         voxels[get_index(x + ix + k, y + iy, z + iz + k)] = SAKURA_LEAVES
+                    elif rnd2 < OAK_PROBABILITY:
+                        voxels[get_index(x + ix + k, y + iy, z + iz + k)] = OAK_LEAVES
                     else:
                         voxels[get_index(x + ix + k, y + iy, z + iz + k)] = TRANSPARENT_LEAVES
         m += 1 if n > 0 else 3 if n > 1 else 0
@@ -103,7 +107,16 @@ def generate_tree(voxels: ndarray, x: int, y: int, z: int, voxel_id: int):
         voxels[get_index(x, y + iy, z)] = WOOD
     
     # Generate tree top
-    if rnd2 < SAKURA_PROBABILITY:
+    if rnd2 < IMENOX_PROBABILITY:
+        voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = GOLD_BLOCK
+    elif rnd2 < SAKURA_PROBABILITY:
         voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = SAKURA_LEAVES
+    elif rnd2 < OAK_PROBABILITY:
+        voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = OAK_LEAVES
     else:
         voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = TRANSPARENT_LEAVES
+    
+    # Generate beehive
+    if random() < BEEHIVE_PROBABILITY:
+        voxels[get_index(x + 1, y + TREE_HEIGHT - 5, z)] = BEEHIVE
+
