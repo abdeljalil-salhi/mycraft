@@ -1,27 +1,32 @@
+from enum import Enum, verify, UNIQUE, CONTINUOUS
+
 from settings import CHUNK_SIZE, WORLD_WIDTH, WORLD_HEIGHT
 
 # Textures IDs
-SAND = 1
-GRASS = 2
-DIRT = 3
-STONE = 4
-SNOW = 5
-SAKURA_LEAVES = 6
-WOOD = 7
-IMENOX = 8
-OAK_PLANK = 9
-DIAMOND_ORE = 10
-TRANSPARENT_LEAVES = 11
-BEEHIVE = 12
-OAK_LEAVES = 13
-GOLD_BLOCK = 14
+@verify(UNIQUE, CONTINUOUS)
+class Texture(Enum):
+    SAND = 1
+    GRASS = 2
+    DIRT = 3
+    STONE = 4
+    SNOW = 5
+    SAKURA_LEAVES = 6
+    WOOD = 7
+    IMENOX = 8
+    OAK_PLANK = 9
+    DIAMOND_ORE = 10
+    NORMAL_LEAVES = 11
+    BEEHIVE = 12
+    OAK_LEAVES = 13
+    GOLD_BLOCK = 14
 
 # Terrain levels
-SNOW_LEVEL = 54
-STONE_LEVEL = 49
-DIRT_LEVEL = 40
-GRASS_LEVEL = 8
-SAND_LEVEL = 7
+class TerrainLevel(Enum):
+    SAND = 7
+    GRASS = 8
+    DIRT = 40
+    STONE = 49
+    SNOW = 54
 
 # World settings
 DIAMOND_PROBABILITY = 0.002

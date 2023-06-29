@@ -1,4 +1,4 @@
-from pygame import init, display, time, event, mouse, quit, image, transform, GL_CONTEXT_MAJOR_VERSION, GL_CONTEXT_MINOR_VERSION, GL_CONTEXT_PROFILE_MASK, GL_CONTEXT_PROFILE_CORE, GL_DEPTH_SIZE, OPENGL, DOUBLEBUF, QUIT, KEYDOWN, K_ESCAPE
+from pygame import init, display, time, event, mouse, quit, GL_CONTEXT_MAJOR_VERSION, GL_CONTEXT_MINOR_VERSION, GL_CONTEXT_PROFILE_MASK, GL_CONTEXT_PROFILE_CORE, GL_DEPTH_SIZE, OPENGL, DOUBLEBUF, QUIT, KEYDOWN, K_ESCAPE
 from moderngl import create_context, DEPTH_TEST, CULL_FACE, BLEND
 from sys import exit
 
@@ -7,6 +7,7 @@ from srcs.shader import Shader
 from srcs.scene import Scene
 from srcs.player import Player
 from srcs.textures import Textures
+from srcs.inventory import Inventory
 from srcs.mixer import Mixer
 
 class Engine:
@@ -43,6 +44,7 @@ class Engine:
         self.player = Player(self)
         self.shader = Shader(self)
         self.scene = Scene(self)
+        self.inventory = Inventory(self)
         self.mixer = Mixer()
         
         self.player.init_world(self.scene.world)
@@ -54,7 +56,7 @@ class Engine:
         
         self.delta_time = self.clock.tick()
         self.time = time.get_ticks() * 0.001
-        display.set_caption(f'FPS: {self.clock.get_fps():.2f}')
+        display.set_caption(f'MyCraft - {self.clock.get_fps():.0f}fps')
     
     def render(self) -> None:
         self.context.clear(color=BACKGROUND_COLOR)

@@ -4,7 +4,7 @@ from numpy import ndarray
 from random import random
 
 from settings import CENTER_XZ, CENTER_Y, CHUNK_SIZE, CHUNK_AREA
-from srcs.texturing import *
+from srcs.texturing import Texture, TerrainLevel, TREE_H_HEIGHT, TREE_H_WIDTH, TREE_HEIGHT, DIAMOND_PROBABILITY, TREE_PROBABILITY, IMENOX_PROBABILITY, SAKURA_PROBABILITY, OAK_PROBABILITY, BEEHIVE_PROBABILITY
 from srcs.noise import noise2, noise3
 
 @njit
@@ -46,32 +46,32 @@ def set_voxel_id(voxels: ndarray, x: int, y: int, z: int, wx: int, wy: int, wz: 
             voxel_id = 0
         else:
             if random() < DIAMOND_PROBABILITY:
-                voxel_id = DIAMOND_ORE
+                voxel_id = Texture.DIAMOND_ORE.value
             else:
-                voxel_id = STONE
+                voxel_id = Texture.STONE.value
     else:
         rng = int(7 * random())
         ry = wy - rng
-        if SNOW_LEVEL <= ry < world_height:
-            voxel_id = SNOW
-        elif STONE_LEVEL <= ry < SNOW_LEVEL:
-            voxel_id = STONE
-        elif DIRT_LEVEL <= ry < STONE_LEVEL:
-            voxel_id = DIRT
-        elif GRASS_LEVEL <= ry < DIRT_LEVEL:
-            voxel_id = GRASS
+        if TerrainLevel.SNOW.value <= ry < world_height:
+            voxel_id = Texture.SNOW.value
+        elif TerrainLevel.STONE.value <= ry < TerrainLevel.SNOW.value:
+            voxel_id = Texture.STONE.value
+        elif TerrainLevel.DIRT.value <= ry < TerrainLevel.STONE.value:
+            voxel_id = Texture.DIRT.value
+        elif TerrainLevel.GRASS.value <= ry < TerrainLevel.DIRT.value:
+            voxel_id = Texture.GRASS.value
         else:
-            voxel_id = SAND
+            voxel_id = Texture.SAND.value
     
     voxels[get_index(x, y, z)] = voxel_id
     
     # Generating trees
-    if wy < DIRT_LEVEL:
+    if wy < TerrainLevel.DIRT.value:
         generate_tree(voxels, x, y, z, voxel_id)
 
 @njit
 def generate_tree(voxels: ndarray, x: int, y: int, z: int, voxel_id: int):    
-    if voxel_id != GRASS or random() > TREE_PROBABILITY:
+    if voxel_id != Texture.GRASS.value or random() > TREE_PROBABILITY:
         return None
     if y + TREE_HEIGHT >= CHUNK_SIZE:
         return None
@@ -81,7 +81,7 @@ def generate_tree(voxels: ndarray, x: int, y: int, z: int, voxel_id: int):
         return None
     
     # Generate dirt under the tree
-    voxels[get_index(x, y, z)] = DIRT
+    voxels[get_index(x, y, z)] = Texture.DIRT.value
     
     # Generate leaves
     m = 0
@@ -93,30 +93,30 @@ def generate_tree(voxels: ndarray, x: int, y: int, z: int, voxel_id: int):
             for iz in range(-TREE_H_WIDTH + m * rng, TREE_H_WIDTH - m):
                 if (ix + iz) % 4:
                     if rnd2 < IMENOX_PROBABILITY:
-                        voxels[get_index(x + ix + k, y + iy, z + iz + k)] = GOLD_BLOCK
+                        voxels[get_index(x + ix + k, y + iy, z + iz + k)] = Texture.GOLD_BLOCK.value
                     elif rnd2 < SAKURA_PROBABILITY:
-                        voxels[get_index(x + ix + k, y + iy, z + iz + k)] = SAKURA_LEAVES
+                        voxels[get_index(x + ix + k, y + iy, z + iz + k)] = Texture.SAKURA_LEAVES.value
                     elif rnd2 < OAK_PROBABILITY:
-                        voxels[get_index(x + ix + k, y + iy, z + iz + k)] = OAK_LEAVES
+                        voxels[get_index(x + ix + k, y + iy, z + iz + k)] = Texture.OAK_LEAVES.value
                     else:
-                        voxels[get_index(x + ix + k, y + iy, z + iz + k)] = TRANSPARENT_LEAVES
+                        voxels[get_index(x + ix + k, y + iy, z + iz + k)] = Texture.NORMAL_LEAVES.value
         m += 1 if n > 0 else 3 if n > 1 else 0
     
     # Generate tree trunk
     for iy in range(1, TREE_HEIGHT - 2):
-        voxels[get_index(x, y + iy, z)] = WOOD
+        voxels[get_index(x, y + iy, z)] = Texture.WOOD.value
     
     # Generate tree top
     if rnd2 < IMENOX_PROBABILITY:
-        voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = GOLD_BLOCK
+        voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = Texture.GOLD_BLOCK.value
     elif rnd2 < SAKURA_PROBABILITY:
-        voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = SAKURA_LEAVES
+        voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = Texture.SAKURA_LEAVES.value
     elif rnd2 < OAK_PROBABILITY:
-        voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = OAK_LEAVES
+        voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = Texture.OAK_LEAVES.value
     else:
-        voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = TRANSPARENT_LEAVES
+        voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = Texture.NORMAL_LEAVES.value
     
     # Generate beehive
     if random() < BEEHIVE_PROBABILITY:
-        voxels[get_index(x + 1, y + TREE_HEIGHT - 5, z)] = BEEHIVE
+        voxels[get_index(x + 1, y + TREE_HEIGHT - 5, z)] = Texture.BEEHIVE.value
 
