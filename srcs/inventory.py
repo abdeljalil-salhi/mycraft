@@ -15,5 +15,8 @@ class Inventory:
 
         self.init_inventory()
     
+    def set_current_slot(self, slot: int) -> None:
+        self.selected_slot = slot
+    
     def init_inventory(self) -> None:
-        self.inventory = [i for i in range(1, self.inventory_size + 1)]
+        self.inventory = [0] * self.inventory_size

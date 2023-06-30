@@ -12,10 +12,13 @@ class Player(Camera):
         self.game = game
         super().__init__(position, yaw, pitch)
     
-    def init_world(self, world) -> None:
+    def init_player(self, world) -> None:
         self.world = world
+        self.event_handler = self.game.event_handler
     
     def update(self) -> None:
+        if self.event_handler.inventory_open or self.event_handler.pause or not self.event_handler.ingame:
+            return
         self.keyboard_events()
         self.mouse_events()
         super().update()

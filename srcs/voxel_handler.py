@@ -4,7 +4,6 @@ from glm import ivec3, sign, fract
 from settings import MAX_RAY_DISTANCE, CHUNK_SIZE, WORLD_WIDTH, WORLD_HEIGHT, WORLD_DEPTH, CHUNK_AREA, WORLD_AREA
 from meshes.chunk_mesh_builder import get_chunk_index
 from objects.chunk import Chunk
-from srcs.texturing import Texture
 if TYPE_CHECKING:
     from srcs.world import World
 
@@ -12,6 +11,7 @@ class VoxelHandler:
     def __init__(self, world: 'World') -> None:
         self.game = world.game
         self.chunks = world.chunks
+        self.inventory = self.game.inventory
         
         # Ray casting
         self.chunk: 'Chunk' = None
@@ -23,7 +23,7 @@ class VoxelHandler:
         
         # 0: Remove voxel, 1: Add voxel
         self.interaction_mode = 0
-        self.new_voxel_id = Texture.OAK_PLANK.value
+        self.new_voxel_id = self.inventory.selected_slot + 1
     
     def rebuild_adjacent_chunk(self, adjacent_voxel_position) -> None:
         index = get_chunk_index(adjacent_voxel_position)
@@ -73,6 +73,7 @@ class VoxelHandler:
     
     def update(self) -> None:
         self.ray_cast()
+        self.new_voxel_id = self.inventory.selected_slot + 1
     
     def ray_cast(self) -> bool:
         # Starting point

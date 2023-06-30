@@ -8,6 +8,7 @@ from srcs.scene import Scene
 from srcs.player import Player
 from srcs.textures import Textures
 from srcs.inventory import Inventory
+from srcs.event_handler import EventHandler
 from srcs.mixer import Mixer
 
 class Engine:
@@ -42,12 +43,13 @@ class Engine:
         
         self.textures = Textures(self)
         self.player = Player(self)
+        self.inventory = Inventory(self)
         self.shader = Shader(self)
         self.scene = Scene(self)
-        self.inventory = Inventory(self)
+        self.event_handler = EventHandler(self)
         self.mixer = Mixer()
         
-        self.player.init_world(self.scene.world)
+        self.player.init_player(self.scene.world)
     
     def update(self) -> None:
         self.player.update()
@@ -67,7 +69,7 @@ class Engine:
         for e in event.get():
             if e.type == QUIT or (e.type == KEYDOWN and e.key == K_ESCAPE):
                 self.is_running = False
-            self.player.handle_mouse_events(e)
+            self.event_handler.handle_events(e)
     
     def run(self) -> None:
         while self.is_running:
