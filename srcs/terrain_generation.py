@@ -4,7 +4,7 @@ from numpy import ndarray
 from random import random
 
 from settings import CENTER_XZ, CENTER_Y, CHUNK_SIZE, CHUNK_AREA
-from srcs.texturing import Texture, TerrainLevel, TREE_H_HEIGHT, TREE_H_WIDTH, TREE_HEIGHT, DIAMOND_PROBABILITY, TREE_PROBABILITY, IMENOX_PROBABILITY, SAKURA_PROBABILITY, OAK_PROBABILITY, BEEHIVE_PROBABILITY
+from srcs.texturing import Texture, TerrainLevel, TREE_H_HEIGHT, TREE_H_WIDTH, TREE_HEIGHT, DIAMOND_PROBABILITY, TREE_PROBABILITY, TNT_PROBABILITY, SAKURA_PROBABILITY, OAK_PROBABILITY, BEEHIVE_PROBABILITY
 from srcs.noise import noise2, noise3
 
 @njit
@@ -92,7 +92,7 @@ def generate_tree(voxels: ndarray, x: int, y: int, z: int, voxel_id: int):
         for ix in range(-TREE_H_WIDTH + m, TREE_H_WIDTH - m * rng):
             for iz in range(-TREE_H_WIDTH + m * rng, TREE_H_WIDTH - m):
                 if (ix + iz) % 4:
-                    if rnd2 < IMENOX_PROBABILITY:
+                    if rnd2 < TNT_PROBABILITY:
                         voxels[get_index(x + ix + k, y + iy, z + iz + k)] = Texture.GOLD_BLOCK.value
                     elif rnd2 < SAKURA_PROBABILITY:
                         voxels[get_index(x + ix + k, y + iy, z + iz + k)] = Texture.SAKURA_LEAVES.value
@@ -107,7 +107,7 @@ def generate_tree(voxels: ndarray, x: int, y: int, z: int, voxel_id: int):
         voxels[get_index(x, y + iy, z)] = Texture.WOOD.value
     
     # Generate tree top
-    if rnd2 < IMENOX_PROBABILITY:
+    if rnd2 < TNT_PROBABILITY:
         voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = Texture.GOLD_BLOCK.value
     elif rnd2 < SAKURA_PROBABILITY:
         voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = Texture.SAKURA_LEAVES.value

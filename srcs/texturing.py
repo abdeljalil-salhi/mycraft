@@ -1,9 +1,8 @@
-from enum import Enum, verify, UNIQUE, CONTINUOUS
+from enum import Enum
 
 from settings import CHUNK_SIZE, WORLD_WIDTH, WORLD_HEIGHT
 
 # Textures IDs
-@verify(UNIQUE, CONTINUOUS)
 class Texture(Enum):
     SAND = 1
     GRASS = 2
@@ -12,7 +11,7 @@ class Texture(Enum):
     SNOW = 5
     SAKURA_LEAVES = 6
     WOOD = 7
-    IMENOX = 8
+    TNT = 8
     OAK_PLANK = 9
     DIAMOND_ORE = 10
     NORMAL_LEAVES = 11
@@ -33,7 +32,7 @@ DIAMOND_PROBABILITY = 0.002
 
 # Trees settings
 TREE_PROBABILITY = 0.02
-IMENOX_PROBABILITY = 0.01
+TNT_PROBABILITY = 0.01
 SAKURA_PROBABILITY = 0.05
 OAK_PROBABILITY = 0.15
 BEEHIVE_PROBABILITY = 0.01
